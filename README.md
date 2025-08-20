@@ -1,2 +1,2 @@
-# learning_swift
-Learning swift
+# learning iOS
+Learning iOS using Swift
