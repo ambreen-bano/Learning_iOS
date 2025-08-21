@@ -74,11 +74,11 @@ class CoreDataModelStack {
         
         
         // A. Tell Core Data: use In-Memory store instead of SQLite(Default).
-        let description = NSPersistentStoreDescription()
-        description.type = NSInMemoryStoreType
-        container.persistentStoreDescriptions = [description]
+        //        let description = NSPersistentStoreDescription()
+        //        description.type = NSInMemoryStoreType //Use for temporary data, data deleted when app termnated (can use for search results which are temporary)
+        //        container.persistentStoreDescriptions = [description]
         
-        //B. If we are not setting persistentStoreDescriptions then, it will be default SQLite
+        //B. If we are not setting persistentStoreDescriptions then, it will be default SQLite (This Generally use when we need data, when App is launching, so For Note App SQLite database is good)
         
         
         /*3. Load persistent Store
