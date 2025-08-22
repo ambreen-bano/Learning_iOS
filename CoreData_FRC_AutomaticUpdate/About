@@ -1,4 +1,4 @@
-/* Core Data - NSFetchedResultsController is use for update automatically table/collection view data.
+/* Notes App using Core Data - NSFetchedResultsController, It is use for update automatically table/collection view data.
  sortDescriptors is mandatory to set in NSFetchRequest. NSFetchedResultsController doesn't know where to insert new row [at bottom or at top or in middle]. So, we need to set sortDescriptor in NSFetchRequest. Then, on the basis of sortDescriptors, NSFetchedResultsController insert rows.
  
  Your FRC correctly detected the insert (from your background save → main context via automaticallyMergesChangesFromParent ).
