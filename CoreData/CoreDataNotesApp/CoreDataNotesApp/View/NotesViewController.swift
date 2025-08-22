@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 /* Thread Confinement Rule---
-A managed object (NSManagedObject) is tied to the context (ViewContext or newBackgroundContext thread) it was fetched from. If we fetch on a background context, those objects belong to that background context. And if we access them on the viewContext thread (to update UI) can cause -Crashes (NSManagedObjectContext concurrency violation) */
+ A managed object (NSManagedObject) is tied to the context (ViewContext or newBackgroundContext thread) it was fetched from. If we fetch on a background context, those objects belong to that background context. And if we access them on the viewContext thread (to update UI) can cause -Crashes (NSManagedObjectContext concurrency violation) */
 
 struct NotesModel {
     var noteText: String
@@ -39,13 +39,17 @@ class NotesViewController: UIViewController {
     
     @objc func dataModified() {
         /*
-         1. When we are using only viewContext which is main thread then no issues will occure related to thread if CRUD is small.
-         2. If we are using only BackgroundContext or mixed of BackgroundContext/viewContext for operations in the code then need to use Notification - NSManagedObjectContextDidSave.
+         1. When we are using only viewContext (main thread). Then, no issues will occure related to thread if CRUD is small. (Not good for large data processiong, it will block UI)
+         2. If we are using only BackgroundContext(Background Thread) or mixed of BackgroundContext/viewContext for operations in the code then need to use Notification - NSManagedObjectContextDidSave.
          3. This Notification will call after every BackgroundContext/viewContext save method called.
          4. Always remember we will receive this notification NSManagedObjectContextDidSave on the SAME thread from save was called. So if we called bgContext.save(), the notification is delivered on that background queue.
          5. So better to switch on Main thread for UI updation after receiving this event.
-         6. Instance of the Entity created using BG context can not be directly use for UI update on the Main thread. So, we need to read Entity from viewContext of main thread before using it to update UI.
-         NOTE : we can not directly use objects fetched in a background context on the UI loading. Son fetching or reading should be on viewContext.
+         6. Instance of the Entity created using BG context can not be directly use for UI update on the Main thread. So, we need below options to use before using it to update UI.
+         
+         NOTE : we can not directly use objects fetched in a background context on the UI loading. So use below OPTIONS -
+         1. If the Object created on bg thread. Then, we can not directly use it to show on UI(main thread). So, we need to fetch on main thread to show it directly on UI (main thread) [Not Good]
+         2. If the Object created on bg thread. Then, we can not directly use it to show on UI(main thread). So, we can fetch on background thread and convert object model into UI friendly own model and then switch to main thread to show UI friendly own model on UI (main thread)
+         3. If the Object created on bg thread. Then, we can not directly use it to show on UI(main thread). So, we can get "id = object.objectID" and then on main thread we can get "uiFriendlyObject = viewContext.object(with: id)" and shown on UI. objectID is thread safe and can be use on different contexts.
          */
         readNotes()
     }
@@ -57,7 +61,7 @@ class NotesViewController: UIViewController {
         }
         alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [weak self] alertAction in
             if let noteText = alert.textFields?.first?.text {
-               // self?.createNoteUsingMainContext(noteText) //A. Using Main Thread
+                // self?.createNoteUsingMainContext(noteText) //A. Using Main Thread
                 self?.createNoteUsingBackgroundContext(noteText) //B. Using BG thread (to avoid UI blocking)
             }
         }))
@@ -239,6 +243,41 @@ extension NotesViewController {
                     if CoreDataModelStack.shared.BackgroundContext.hasChanges {
                         try CoreDataModelStack.shared.BackgroundContext.save() //always save after any changes
                         print("Note Created using BG thread...")
+                    }
+                }
+            } catch {
+                print("Failed to create Note using BG thread : \(error)")
+            }
+        }
+    }
+}
+
+/* Create Note OnBackgroundContext and update on UI using ObjectID. Using ObjectID it gives fault object, right now this code method not working properly because of fault object not able to display on UI. Need to find the bug causes falut object */
+extension NotesViewController {
+    func createNoteOnBackgroundContextUsingObjectID(_ noteText: String) {
+        CoreDataModelStack.shared.BackgroundContext.perform {
+            do {
+                if let note = NSEntityDescription.insertNewObject(forEntityName: "Note", into: CoreDataModelStack.shared.BackgroundContext) as? Note {
+                    note.noteText = noteText
+                    note.createdDate = Date()
+                    let id = note.objectID //Thread Safe, can use on different context
+                    if CoreDataModelStack.shared.BackgroundContext.hasChanges {
+                        try CoreDataModelStack.shared.BackgroundContext.save() //Always save after any changes
+                        print("Note Created using BG thread...")
+                    }
+                    
+                    DispatchQueue.main.async { [weak self] in
+                        //Using "id" provides object compatible to main thread, so object created on bg thread we can use on another thread(main thread)
+                        //Ensuring the object from the background context is fully usable on the main thread by setting context.automaticallyMergesChangesFromParent = true
+                        if let note = CoreDataModelStack.shared.context.object(with: id) as? Note {
+                            if let notes = self?.notes, notes.count > 0 {
+                                self?.notes.append(note)
+                            } else {
+                                self?.notes = [note]
+                            }
+                            self?.tableView.reloadData() //not updating UI, BUG because of fault note object
+                            print("Table updated with new note")
+                        }
                     }
                 }
             } catch {
