@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="HomeTableViewCell" id="NR1-cT-Qaa" customClass="HomeTableViewCell" customModule="iOSDesignPatterns_Factory" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="NR1-cT-Qaa" id="EUL-LD-lDr">
+                <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="htdg" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JXD-Yp-cxz">
+                        <rect key="frame" x="10" y="0.0" width="263" height="44"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EoJ-sV-JaV">
+                        <rect key="frame" x="283" y="10" width="100" height="24"/>
+                        <color key="backgroundColor" red="0.0" green="0.72156862749999995" blue="0.96078431369999995" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="100" id="PM4-b9-oG8"/>
+                        </constraints>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" title="id"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="15"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                        <connections>
+                            <action selector="BtnTapped:" destination="NR1-cT-Qaa" eventType="touchUpInside" id="pAv-dt-PVC"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="EoJ-sV-JaV" secondAttribute="trailing" constant="10" id="9tT-GH-Eri"/>
+                    <constraint firstItem="EoJ-sV-JaV" firstAttribute="top" secondItem="EUL-LD-lDr" secondAttribute="top" constant="10" id="FLf-R7-iN0"/>
+                    <constraint firstAttribute="bottom" secondItem="EoJ-sV-JaV" secondAttribute="bottom" constant="10" id="N1V-KM-OSZ"/>
+                    <constraint firstItem="JXD-Yp-cxz" firstAttribute="leading" secondItem="EUL-LD-lDr" secondAttribute="leading" constant="10" id="Ubf-YP-9km"/>
+                    <constraint firstItem="JXD-Yp-cxz" firstAttribute="top" secondItem="EUL-LD-lDr" secondAttribute="top" id="pKn-kY-nXq"/>
+                    <constraint firstItem="EoJ-sV-JaV" firstAttribute="leading" secondItem="JXD-Yp-cxz" secondAttribute="trailing" constant="10" id="ueF-4w-ND0"/>
+                    <constraint firstAttribute="bottom" secondItem="JXD-Yp-cxz" secondAttribute="bottom" id="yfK-f1-xQi"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="button" destination="EoJ-sV-JaV" id="nXP-aG-xDd"/>
+                <outlet property="label" destination="JXD-Yp-cxz" id="Xr9-3Z-bwi"/>
+            </connections>
+            <point key="canvasLocation" x="-83" y="20"/>
+        </tableViewCell>
+    </objects>
+</document>
